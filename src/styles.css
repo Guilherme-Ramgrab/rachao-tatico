@@ -1,0 +1,373 @@
+:root {
+  --bg: #0e1712;
+  --surface: #17241c;
+  --surface-2: #203226;
+  --border: #2c4134;
+  --text: #ecf3ee;
+  --muted: #9db3a5;
+  --accent: #3ddc84;
+  --accent-ink: #062312;
+  --radius: 12px;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Cabeçalho */
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.header h1 span {
+  color: var(--accent);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.segmented button {
+  border: 0;
+  background: transparent;
+  padding: 7px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.segmented button.is-active {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn:hover {
+  background: var(--surface-2);
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.btn-primary:hover {
+  background: #5fe69b;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* Tabuleiro */
+.board {
+  position: relative;
+  /* Cabe na altura da tela: a largura vem da altura disponível × proporção. */
+  width: min(100%, max(480px, calc((100vh - 110px) * var(--aspect))));
+  margin: 0 auto;
+  border-radius: var(--radius);
+  overflow: hidden;
+  container-type: inline-size;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.35);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pitch-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.team-label {
+  position: absolute;
+  top: 1.2%;
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  max-width: 40%;
+  padding: 0.3em 0.8em;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.5);
+  color: #fff;
+  font-size: clamp(10px, 1.4cqw, 15px);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.team-label::before {
+  content: '';
+  flex: none;
+  width: 0.75em;
+  height: 0.75em;
+  border-radius: 50%;
+  background: var(--team-color);
+  box-shadow: 0 0 0 1.5px #fff;
+}
+
+.team-label--0 {
+  left: 1.2%;
+}
+
+.team-label--1 {
+  right: 1.2%;
+}
+
+.board-credit {
+  position: absolute;
+  bottom: 0.6%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(8px, 0.9cqw, 11px);
+  font-weight: 600;
+  color: rgb(255 255 255 / 0.7);
+  pointer-events: none;
+}
+
+/* Jogador */
+.token {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: clamp(26px, 5cqw, 60px);
+  transform: translate(-50%, -32%);
+  z-index: 1;
+}
+
+.token.is-dragging {
+  z-index: 10;
+}
+
+.token-shirt {
+  width: 100%;
+  cursor: grab;
+  touch-action: none;
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.35));
+  transition: transform 0.1s;
+}
+
+.token.is-dragging .token-shirt {
+  cursor: grabbing;
+  transform: scale(1.12);
+}
+
+.shirt {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.token-name {
+  margin-top: 2px;
+  padding: 0.15em 0.55em;
+  border: 0;
+  border-radius: 6px;
+  background: rgb(10 30 18 / 0.75);
+  color: #fff;
+  font-size: clamp(9px, 1.15cqw, 13px);
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  cursor: text;
+}
+
+.token-name.is-placeholder {
+  color: rgb(255 255 255 / 0.75);
+}
+
+.token-input {
+  width: 9em;
+  text-align: center;
+  outline: 2px solid var(--accent);
+}
+
+.hint {
+  margin: 10px 0 18px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Painéis dos times */
+.panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.panel {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 4px solid;
+}
+
+.field {
+  display: grid;
+  gap: 4px;
+}
+
+.field span,
+.color-field span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.field input {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.field input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.color-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.color-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.color-field input {
+  width: 40px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+}
+
+/* Campo na vertical (celular): Time A embaixo, Time B em cima */
+.board--vertical {
+  width: 100%;
+}
+
+.board--vertical .token {
+  width: clamp(26px, 8.5cqw, 52px);
+}
+
+.board--vertical .token-name {
+  font-size: clamp(9px, 2.7cqw, 12px);
+}
+
+.board--vertical .team-label {
+  font-size: clamp(10px, 3cqw, 13px);
+}
+
+.board--vertical .team-label--0 {
+  top: auto;
+  bottom: 1%;
+}
+
+.board--vertical .team-label--1 {
+  right: auto;
+  left: 1.2%;
+  top: 1%;
+}
+
+.board--vertical .board-credit {
+  left: auto;
+  right: 1.2%;
+  transform: none;
+}
+
+@media (max-width: 640px) {
+  .app {
+    padding: 12px 16px;
+  }
+
+  .panels {
+    grid-template-columns: 1fr;
+  }
+
+  .header {
+    justify-content: center;
+  }
+
+  .toolbar {
+    justify-content: center;
+  }
+
+  .btn,
+  .segmented button {
+    padding-inline: 12px;
+  }
+}
